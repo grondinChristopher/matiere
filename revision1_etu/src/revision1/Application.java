@@ -46,7 +46,6 @@ public class Application {
         System.out.println(autoB);
 
         // Réparation des autos C et D
-        //TODO autoC pas réparer
         garage.entreVehiculeGarage(autoC, 1);
         garage.entreVehiculeGarage(autoD,2);
 
@@ -60,5 +59,7 @@ public class Application {
         System.out.println(autoC);
         System.out.println(autoD);
 
+        System.out.println("\n");
+        garage.afficheHistorique();
     }
 }

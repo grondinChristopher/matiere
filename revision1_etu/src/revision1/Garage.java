@@ -1,14 +1,15 @@
 package revision1;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class Garage {
     private Automobile[] stationnements;
     private Automobile[] garages;
-    private Map reparation;
+    private Map historique;
 
     /**
      * crée un Garage avec le nombre de place de stationnement demandé et toujours 2 places de garage pour les réparations.
@@ -18,7 +19,7 @@ public class Garage {
     public Garage(int nombrePlacesStationnement) {
         assert nombrePlacesStationnement > 0 : "valeur négative";
 
-        reparation = new HashMap<LocalDateTime, String>();
+        historique = new TreeMap<LocalDateTime, String>();
         garages = new Automobile[2];
         stationnements = new Automobile[nombrePlacesStationnement];
     }
@@ -173,20 +174,36 @@ public class Garage {
         for (int i = 0; i < garages.length; i++) {
             String listeRepa = garages[i].getNIP() + "-";
 
-            if (garages[i].getEtatMoteur() == Automobile.Etat.BRISE || garages[i].getEtatMoteur() == Automobile.Etat.TRES_BRISE){
+            if (garages[i].getEtatMoteur() != Automobile.Etat.NEUF && garages[i].getEtatMoteur() != Automobile.Etat.REPARE){
                 garages[i].setEtatMoteur(Automobile.Etat.REPARE);
                 listeRepa += " moteur";
             }
-            if (garages[i].getEtatCarosserie() == Automobile.Etat.BRISE || garages[i].getEtatCarosserie() == Automobile.Etat.TRES_BRISE){
+            if (garages[i].getEtatCarosserie() != Automobile.Etat.NEUF  && garages[i].getEtatCarosserie() != Automobile.Etat.REPARE){
                 garages[i].setEtatCarosserie(Automobile.Etat.REPARE);
                 listeRepa += " carosserie";
             }
-            if (garages[i].getEtatTransmission() == Automobile.Etat.BRISE || garages[i].getEtatTransmission() == Automobile.Etat.TRES_BRISE){
+            if (garages[i].getEtatTransmission() != Automobile.Etat.NEUF  && garages[i].getEtatTransmission() != Automobile.Etat.REPARE){
                 garages[i].setEtatTransmission(Automobile.Etat.REPARE);
                 listeRepa += " transmission";
             }
-            reparation.put(LocalDateTime.now(), listeRepa);
+            historique.put(LocalDateTime.now(), listeRepa);
+            try {
+                Thread.sleep(1);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
+    public void afficheHistorique() {
+        System.out.println("Historique:" + "\n");
+
+        Iterator iter = historique.entrySet().iterator();
+        while (iter.hasNext()) {
+            Map.Entry<LocalDateTime, String> entry = (Map.Entry) iter.next();
+            System.out.println(entry.getKey().toString() + " : " + entry.getValue());
+        }
+
+        System.out.println("\n " + "fin de l'historique");
+    }
 }
